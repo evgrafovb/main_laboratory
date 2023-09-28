@@ -102,28 +102,56 @@ void EditStation(CompressorStation& station) {
 }
 
 void SavePipeline(const Pipeline& pipe) {
-	ofstream fout;
-	fout.open("data.txt", ios::app);
-	if (fout.is_open()) {
-		fout << "PIPE" << '\n' 
-			<< pipe.kilometre << '\n'
-			<< pipe.length << '\n'
-			<< pipe.diametre << '\n'
-			<< pipe.isRepaired << endl;
-		fout.close();
+	if (pipe.kilometre != "") {
+		ofstream fout;
+		fout.open("data.txt", ios::app);
+		if (fout.is_open()) {
+			fout << "PIPE" << '\n'
+				<< pipe.kilometre << '\n'
+				<< pipe.length << '\n'
+				<< pipe.diametre << '\n'
+				<< pipe.isRepaired << endl;
+			fout.close();
+		}
 	}
 }
 
 void SaveStation(const CompressorStation& station) {
-	ofstream fout;
-	fout.open("data.txt", ios::app);
-	if (fout.is_open()) {
-		fout << "STATION" << '\n' 
-			<< station.name << '\n'
-			<< station.workshops << '\n'
-			<< station.busyWorkshops << '\n'
-			<< station.efficiency << endl;
-		fout.close();
+	if (station.name != "") {
+		ofstream fout;
+		fout.open("data.txt", ios::app);
+		if (fout.is_open()) {
+			fout << "STATION" << '\n'
+				<< station.name << '\n'
+				<< station.workshops << '\n'
+				<< station.busyWorkshops << '\n'
+				<< station.efficiency << endl;
+			fout.close();
+		}
+	}
+}
+
+void Save(const Pipeline& pipe, const CompressorStation& station) {
+	if (pipe.kilometre != "" || station.name != "") {
+		ofstream fout;
+		fout.open("data.txt", ios::out);
+		if (fout.is_open()) {
+			if (station.name != "") {
+				fout << "STATION" << '\n'
+					<< station.name << '\n'
+					<< station.workshops << '\n'
+					<< station.busyWorkshops << '\n'
+					<< station.efficiency << endl;
+			}
+			if (pipe.kilometre != "") {
+				fout << "PIPE" << '\n'
+					<< pipe.kilometre << '\n'
+					<< pipe.length << '\n'
+					<< pipe.diametre << '\n'
+					<< pipe.isRepaired << endl;
+			}
+			fout.close();
+		}
 	}
 }
 
@@ -205,12 +233,9 @@ int main() {
 			break;
 		}
 		case 6: {
-			if (pipe.kilometre != "") {
-				SavePipeline(pipe);
-			}
-			if (station.name != "") {
-				SaveStation(station);
-			}
+			//SavePipeline(pipe);
+			//SaveStation(station);
+			Save(pipe, station);
 			break;
 		}
 		case 7: {
