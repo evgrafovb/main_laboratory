@@ -165,10 +165,10 @@ Pipeline LoadPipeline() {
 	fin.open("data.txt", ios::in);
 	if (fin.is_open()) {
 		string id;
-		while (getline(fin, id)) {
+		while (getline(fin >> ws, id)) {
 			if (id == "PIPE") {
-				fin >> pipe.kilometre
-					>> pipe.length
+				getline(fin, pipe.kilometre);
+				fin >> pipe.length
 					>> pipe.diametre
 					>> pipe.isRepaired;
 			}
@@ -184,10 +184,10 @@ CompressorStation LoadStation() {
 	fin.open("data.txt", ios::in);
 	if (fin.is_open()) {
 		string id;
-		while (getline(fin, id)) {
+		while (getline(fin >> ws, id)) {
 			if (id == "STATION") {
-				fin >> station.name
-					>> station.workshops
+				getline(fin, station.name);
+				fin >> station.workshops
 					>> station.busyWorkshops
 					>> station.efficiency;
 			}
