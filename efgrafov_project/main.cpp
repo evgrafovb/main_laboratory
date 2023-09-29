@@ -28,16 +28,20 @@ type CorrectInput(type min, type max) {
 	return item;
 }
 
+string ReadLine() {
+	string full_name;
+	getline(cin >> ws, full_name);
+	return full_name;
+}
+
 Pipeline InputPipeline() {
 	Pipeline pipe;
 	cout << "Type a kilometre name: ";
-	cin >> pipe.kilometre;
+	pipe.kilometre = ReadLine();
 	cout << "Enter a length: ";
 	pipe.length = CorrectInput(0.1, 999.9);
-	//cin >> pipe.length;
 	cout << "Enter a diametre: ";
 	pipe.diametre = CorrectInput(100, 1400);
-	//cin >> pipe.diametre;
 	cout << "Type \"1\", if a pipeline is repaired, type \"0\" - if it isn't: ";
 	cin >> pipe.isRepaired;
 	return pipe;
@@ -46,7 +50,7 @@ Pipeline InputPipeline() {
 CompressorStation InputStation() {
 	CompressorStation station;
 	cout << "Type a station name: ";
-	cin >> station.name;
+	station.name = ReadLine();
 	cout << "Enter an amount of workshops: ";
 	station.workshops = CorrectInput(1, 100);
 	cout << "Enter an amount of busy workshops: ";
