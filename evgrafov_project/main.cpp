@@ -237,8 +237,6 @@ int main() {
 			break;
 		}
 		case 6: {
-			//SavePipeline(pipe);
-			//SaveStation(station);
 			Save(pipe, station);
 			break;
 		}
