@@ -12,8 +12,7 @@ type CorrectInput(type min, type max) {
 	while ((cin >> item).fail() || item < min || item > max) {
 		cin.clear();
 		cin.ignore(10000, '\n');
-		cout << "Enter a number from " << min << " to " << max << ": ";
+		cout << "Enter a value from " << min << " to " << max << ": ";
 	}
 	return item;
 }
-
