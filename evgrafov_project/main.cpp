@@ -116,18 +116,75 @@ void Delete(unordered_map<int, type>& items) {
 	}
 }
 
+template <typename type>
+using PipelineFilter = bool(*)(const Pipeline& pipe, type param);
+
+bool CheckByName(const Pipeline& pipe, string param) {
+	return (pipe.kilometre.find(param) != string::npos);
+}
+
+bool CheckByRepair(const Pipeline& pipe, bool param) {
+	return (pipe.isRepaired == param);
+}
+
+template <typename type>
+vector<int> FindPipelinesByFilter(const unordered_map<int, Pipeline>& pipes, PipelineFilter<type> f, type param) {
+	vector<int> result;
+	result.reserve(size(pipes));
+	for (auto& [id, pipe] : pipes) {
+		if (f(pipe, param)) {
+			result.push_back(id);
+		}
+	}
+	if (!(size(result))) {
+		cout << "No pipelines found" << endl;
+	}
+	return result;
+}
+
+template <typename type>
+using StationFilter = bool(*)(const CompressorStation& station, type param);
+
+bool CheckByName(const CompressorStation& station, string param) {
+	return (station.name.find(param) != string::npos);
+}
+
+bool CheckByUnworkingWorkshops(const CompressorStation& station, double param) {
+	return (double((station.workshops - station.busyWorkshops) * 100) / station.workshops) >= param;
+}
+
+template <typename type>
+vector<int> FindStationsByFilter(const unordered_map<int, CompressorStation>& stations, StationFilter<type> f, type param) {
+	vector<int> result;
+	result.reserve(size(stations));
+	for (auto& [id, station] : stations) {
+		if (f(station, param)) {
+			result.push_back(id);
+		}
+	}
+	if (!(size(result))) {
+		cout << "No stations found" << endl;
+	}
+	return result;
+}
+
 void PrintMenu() {
 	cout << "1. Add a pipeline" << endl
 		<< "2. Add a compressor station" << endl
 		<< "3. Show all objects" << endl
 		<< "4. Edit a pipeline" << endl
 		<< "5. Edit a compressor station" << endl
-		<< "6. Save changes" << endl
-		<< "7. Load" << endl
+		<< "6. Save to file" << endl
+		<< "7. Load from file" << endl
 		<< "8. Delete a pipeline" << endl
 		<< "9. Delete a compressor station" << endl
+		<< "10. Find pipelines by name" << endl
+		<< "11. Find pipelines by repair status - TRUE" << endl
+		<< "12. Find stations by name" << endl
+		<< "13. Find stations by percent of not working workshops" << endl
+		<< "14. Pack editing of pipelines" << endl
 		<< "0. Exit" << endl << endl
-		<< "Enter a number from 0 to 9: ";
+		<< "Enter a number from 0 to 14: ";
 }
 
 int main() {
@@ -135,7 +192,7 @@ int main() {
 	unordered_map<int, CompressorStation> stations;
 	while (1) {
 		PrintMenu();
-		switch (CorrectInput(0, 10)) {
+		switch (CorrectInput(0, 14)) {
 		case 1: {
 			Pipeline pipe;
 			cin >> pipe;
@@ -161,16 +218,10 @@ int main() {
 		}
 		case 4: {
 			EditPipeline(pipes);
-			/*for (auto& [id, pipe] : pipes) {
-				EditPipeline(pipe);
-			}*/
 			break;
 		}
 		case 5: {
 			EditStation(stations);
-			/*for (auto& [id, station] : stations) {
-				EditStation(station);
-			}*/
 			break;
 		}
 		case 6: {
@@ -208,7 +259,7 @@ int main() {
 					fin >> p_id;
 					pipe = LoadPipeline(fin);
 					pipes.insert(pair{ p_id, pipe });
-					pipe.MaxID = size(pipes);
+					pipe.MaxID = p_id;
 				}
 				int count_s;
 				fin >> count_s;
@@ -216,7 +267,7 @@ int main() {
 					fin >> st_id;
 					station = LoadStation(fin);
 					stations.insert(pair{ st_id, station });
-					station.MaxID = size(stations);
+					station.MaxID = st_id;
 				}
 				fin.close();
 			}
@@ -228,6 +279,46 @@ int main() {
 		}
 		case 9: {
 			Delete(stations);
+			break;
+		}
+		case 10: {
+			string name;
+			cout << "Input pileline name for searching: ";
+			cin >> name;
+			for (int id : FindPipelinesByFilter(pipes, CheckByName, name)) {
+				cout << "ID: " << id;
+				cout << pipes[id];
+			}
+			break;
+		}
+		case 11: {
+			for (int id : FindPipelinesByFilter(pipes, CheckByRepair, true)) {
+				cout << "ID: " << id;
+				cout << pipes[id];
+			}
+			break;
+		}
+		case 12: {
+			string name;
+			cout << "Input station name for searching: ";
+			cin >> name;
+			for (int id : FindStationsByFilter(stations, CheckByName, name)) {
+				cout << "ID: " << id;
+				cout << stations[id];
+			}
+			break;
+		}
+		case 13: {
+			cout << "Input percent of unworking stations for searching: ";
+			double percent = CorrectInput(0.0, 100.0);
+			for (int id : FindStationsByFilter(stations, CheckByUnworkingWorkshops, percent)) {
+				cout << "ID: " << id;
+				cout << stations[id];
+			}
+			break;
+		}
+		case 14: {
+
 			break;
 		}
 		case 0:
