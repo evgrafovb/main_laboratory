@@ -2,7 +2,9 @@
 #include <fstream>
 #include <filesystem>
 #include <string>
-#include <vector>
+//#include <vector>
+#include <unordered_set>
+#include <set>
 #include "Pipeline.h"
 #include "CompressorStation.h"
 #include "utils.h"
@@ -35,16 +37,8 @@ int CorrectIntID() {
 	return id;
 }
 
-void EditPipeline(unordered_map<int, Pipeline>& pipes) {
-	cout << "Enter a pipeline's ID for editing: ";
-	int id;
-	id = CorrectIntID();
-	if (CheckID(pipes, id)) {
-		pipes[id].isRepaired = !(pipes[id].isRepaired);
-	}
-	else {
-		cout << "No pipeline with such ID" << endl;
-	}
+void EditPipeline(unordered_map<int, Pipeline>& pipes, const int& id) {
+	pipes[id].isRepaired = !(pipes[id].isRepaired);
 }
 
 void EditStation(unordered_map<int, CompressorStation>& stations) {
@@ -103,16 +97,19 @@ CompressorStation LoadStation(ifstream& fin) {
 	return station;
 }
 
-template <typename type>
-void Delete(unordered_map<int, type>& items) {
-	cout << "Enter a item's ID for deleting: ";
+void DeletePipe(unordered_map<int, Pipeline>& pipes, const int& id) {
+	pipes.erase(id);
+}
+
+void DeleteStation(unordered_map<int, CompressorStation>& stations) {
+	cout << "Enter a station's ID for deleting: ";
 	int id;
 	id = CorrectIntID();
-	if (CheckID(items, id)) {
-		items.erase(id);
+	if (CheckID(stations, id)) {
+		stations.erase(id);
 	}
 	else {
-		cout << "No item with such ID" << endl;
+		cout << "No station with such ID" << endl;
 	}
 }
 
@@ -128,12 +125,11 @@ bool CheckByRepair(const Pipeline& pipe, bool param) {
 }
 
 template <typename type>
-vector<int> FindPipelinesByFilter(const unordered_map<int, Pipeline>& pipes, PipelineFilter<type> f, type param) {
-	vector<int> result;
-	result.reserve(size(pipes));
+unordered_set<int> FindPipelinesByFilter(const unordered_map<int, Pipeline>& pipes, PipelineFilter<type> f, type param) {
+	unordered_set<int> result;
 	for (auto& [id, pipe] : pipes) {
 		if (f(pipe, param)) {
-			result.push_back(id);
+			result.insert(id);
 		}
 	}
 	if (!(size(result))) {
@@ -154,18 +150,82 @@ bool CheckByUnworkingWorkshops(const CompressorStation& station, double param) {
 }
 
 template <typename type>
-vector<int> FindStationsByFilter(const unordered_map<int, CompressorStation>& stations, StationFilter<type> f, type param) {
-	vector<int> result;
-	result.reserve(size(stations));
+unordered_set<int> FindStationsByFilter(const unordered_map<int, CompressorStation>& stations, StationFilter<type> f, type param) {
+	unordered_set<int> result;
 	for (auto& [id, station] : stations) {
 		if (f(station, param)) {
-			result.push_back(id);
+			result.insert(id);
 		}
 	}
 	if (!(size(result))) {
 		cout << "No stations found" << endl;
 	}
 	return result;
+}
+
+void FindMenu() {
+	cout << "1. Find pipelines by name" << endl
+		<< "2. Find pipelines by repair status - TRUE" << endl
+		<< "3. Find pipelines by ID" << endl
+		<< "Enter a number from 1 to 3: ";
+}
+
+void PrintFoundPipes(const int& id, unordered_map<int, Pipeline>& pipes) {
+	cout << "ID: " << id;
+	cout << pipes[id];
+}
+
+set<int> PackEdit(unordered_map<int, Pipeline>& pipes) {
+	set<int> pipesID{};
+	FindMenu();
+	switch (CorrectInput(1, 3)) {
+	case 1: {
+		string name;
+		cout << "Input pileline name for searching: ";
+		cin >> name;
+		for (int id : FindPipelinesByFilter(pipes, CheckByName, name)) {
+			PrintFoundPipes(id, pipes);
+			pipesID.insert(id);
+		}
+		break;
+	}
+	case 2: {
+		for (int id : FindPipelinesByFilter(pipes, CheckByRepair, true)) {
+			PrintFoundPipes(id, pipes);
+			pipesID.insert(id);
+		}
+		break;
+	}
+	case 3: {
+		while (1) {
+			cout << "Input ID of pipeline or 0 to complete: ";
+			int id;
+			id = CorrectIntID();
+			if (id) {
+				if (CheckID(pipes, id)) {
+					PrintFoundPipes(id, pipes);
+					pipesID.insert(id);
+				}
+				else {
+					cout << "No pipeline with such ID" << endl;
+				}
+			}
+			else {
+				break;
+			}
+		}
+		break;
+	}
+	}
+	return pipesID;
+}
+
+void EditMenu() {
+	cout << "1. Edit all found pipelines" << endl
+		<< "2. Delete all found pipelines" << endl
+		<< "3. Show all pipelines" << endl
+		<< "0. Return to main MENU" << endl << endl
+		<< "Enter a number from 0 to 3: ";
 }
 
 void PrintMenu() {
@@ -196,13 +256,13 @@ int main() {
 		case 1: {
 			Pipeline pipe;
 			cin >> pipe;
-			pipes.insert(pair{pipe.getPipeID(), pipe});
+			pipes.insert(pair{ pipe.getPipeID(), pipe });
 			break;
 		}
 		case 2: {
 			CompressorStation station;
 			cin >> station;
-			stations.insert(pair{station.getStationID(), station});
+			stations.insert(pair{ station.getStationID(), station });
 			break;
 		}
 		case 3: {
@@ -217,7 +277,15 @@ int main() {
 			break;
 		}
 		case 4: {
-			EditPipeline(pipes);
+			cout << "Enter a pipeline's ID for editing: ";
+			int id;
+			id = CorrectIntID();
+			if (CheckID(pipes, id)) {
+				EditPipeline(pipes, id);
+			}
+			else {
+				cout << "No pipeline with such ID" << endl;
+			}
 			break;
 		}
 		case 5: {
@@ -274,11 +342,19 @@ int main() {
 			break;
 		}
 		case 8: {
-			Delete(pipes);
+			cout << "Enter a pipeline's ID for deleting: ";
+			int id;
+			id = CorrectIntID();
+			if (CheckID(pipes, id)) {
+				DeletePipe(pipes, id);
+			}
+			else {
+				cout << "No pipeline with such ID" << endl;
+			}
 			break;
 		}
 		case 9: {
-			Delete(stations);
+			DeleteStation(stations);
 			break;
 		}
 		case 10: {
@@ -318,7 +394,36 @@ int main() {
 			break;
 		}
 		case 14: {
-
+			set<int> pipesID = PackEdit(pipes);
+			bool flag = true;
+			while (flag) {
+				EditMenu();
+				switch (CorrectInput(0, 3)) {
+				case 1: {
+					for (const int& id : pipesID) {
+						EditPipeline(pipes, id);
+					}
+					break;
+				}
+				case 2: {
+					for (const int& id : pipesID) {
+						DeletePipe(pipes, id);
+					}
+					break;
+				}
+				case 3: {
+					for (auto& [id, pipe] : pipes) {
+						cout << "ID: " << id;
+						cout << pipe << endl;
+					}
+					break;
+				}
+				case 0: {
+					flag = false;
+					break;
+				}
+				}
+			}
 			break;
 		}
 		case 0:
