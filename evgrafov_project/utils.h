@@ -2,9 +2,28 @@
 #include <iostream>
 #include <string>
 
-#define READ_LINE(in, str) getline(in>>std::ws, str);
+#define READ_LINE(in, str) getline(in>>std::ws, str); cerr << "Full line by READ_LINE: " << str << endl;
 
 using namespace std;
+
+class redirect_output_wrapper
+{
+	std::ostream& stream;
+	std::streambuf* const old_buf;
+public:
+	redirect_output_wrapper(std::ostream& src)
+		:old_buf(src.rdbuf()), stream(src)
+	{
+	}
+
+	~redirect_output_wrapper() {
+		stream.rdbuf(old_buf);
+	}
+	void redirect(std::ostream& dest)
+	{
+		stream.rdbuf(dest.rdbuf());
+	}
+};
 
 template <typename type>
 type CorrectInput(type min, type max) {
@@ -14,5 +33,6 @@ type CorrectInput(type min, type max) {
 		cin.ignore(10000, '\n');
 		cout << "Enter a value from " << min << " to " << max << ": ";
 	}
+	std::cerr << "User entered item with function CorrectInput: " << item << endl;
 	return item;
 }

@@ -2,7 +2,6 @@
 #include <fstream>
 #include <filesystem>
 #include <string>
-//#include <vector>
 #include <unordered_set>
 #include <set>
 #include "Pipeline.h"
@@ -16,6 +15,7 @@ string FileName() {
 	string file_name;
 	cout << "Enter a file name: ";
 	READ_LINE(cin, file_name);
+	cerr << "User entered file name: " << file_name << endl;
 	if (!(filesystem::exists(file_name))) {
 		cout << "No such file in directory" << endl;
 	}
@@ -34,6 +34,7 @@ int CorrectIntID() {
 		cin.ignore(10000, '\n');
 		cout << "Enter an integer: ";
 	}
+	cerr << "User entered ID: " << id << endl;
 	return id;
 }
 
@@ -51,10 +52,11 @@ void EditStation(unordered_map<int, CompressorStation>& stations) {
 		cin >> decision;
 		if (decision == "+" && stations[id].busyWorkshops < stations[id].workshops) {
 			stations[id].busyWorkshops++;
-		}
+		} 
 		if (decision == "-" && stations[id].busyWorkshops > 0) {
 			stations[id].busyWorkshops--;
 		}
+		cerr << "User entered decision in editing of station: " << decision << endl;
 	}
 	else {
 		cout << "No compressor station with such ID" << endl;
@@ -182,7 +184,8 @@ set<int> PackEdit(unordered_map<int, Pipeline>& pipes) {
 	case 1: {
 		string name;
 		cout << "Input pileline name for searching: ";
-		cin >> name;
+		READ_LINE(cin, name);
+		cerr << "User entered pileline name for searching: " << name << endl;
 		for (int id : FindPipelinesByFilter(pipes, CheckByName, name)) {
 			PrintFoundPipes(id, pipes);
 			pipesID.insert(id);
@@ -248,6 +251,10 @@ void PrintMenu() {
 }
 
 int main() {
+	redirect_output_wrapper cerr_out(cerr);
+	ofstream logfile("logging.txt");
+	if (logfile)
+		cerr_out.redirect(logfile);
 	unordered_map<int, Pipeline> pipes;
 	unordered_map<int, CompressorStation> stations;
 	while (1) {
@@ -297,6 +304,7 @@ int main() {
 			string file_name;
 			cout << "Enter a file name: ";
 			cin >> file_name;
+			cerr << "User entered file name: " << file_name << endl;
 			fout.open(file_name, ios::out);
 			if (fout.is_open()) {
 				fout << pipes.size() << endl;
