@@ -3,8 +3,14 @@
 
 int Pipeline::MaxID = 0;
 
+void Pipeline::Reset()
+{
+	MaxID = 0;
+}
+
 Pipeline::Pipeline()
 {
+	//MaxID++;
 	id = ++MaxID;
 	kilometre = "Unknown";
 	length = 0.1;
@@ -32,9 +38,30 @@ std::istream& operator >> (std::istream& in, Pipeline& pipe)
 
 std::ostream& operator << (std::ostream& out, const Pipeline& pipe)
 {
-	out << "\tName: " << pipe.kilometre
+	out << "ID: " << pipe.id
+		<< "\tName: " << pipe.kilometre
 		<< "\tLength: " << pipe.length
 		<< "\tDiametre: " << pipe.diametre
 		<< "\tIs repaired: " << pipe.isRepaired << std::endl;
 	return out;
+}
+
+std::ifstream& operator>>(std::ifstream& fin, Pipeline& pipe)
+{
+	fin >> pipe.id;
+	LOAD_LINE(fin, pipe.kilometre);
+	fin >> pipe.length
+		>> pipe.diametre
+		>> pipe.isRepaired;
+	return fin;
+}
+
+std::ofstream& operator<<(std::ofstream& fout, const Pipeline& pipe)
+{
+	fout << pipe.id << '\n'
+		<< pipe.kilometre << '\n'
+		<< pipe.length << '\n'
+		<< pipe.diametre << '\n'
+		<< pipe.isRepaired << endl;
+	return fout;
 }

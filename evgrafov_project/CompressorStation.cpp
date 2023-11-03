@@ -3,8 +3,14 @@
 
 int CompressorStation::MaxID = 0;
 
+void CompressorStation::Reset()
+{
+	MaxID = 0;
+}
+
 CompressorStation::CompressorStation()
 {
+	//MaxID++;
 	id = ++MaxID;
 	name = "Unknown";
 	workshops = 1;
@@ -32,9 +38,30 @@ std::istream& operator >> (std::istream& in, CompressorStation& station)
 
 std::ostream& operator << (std::ostream& out, const CompressorStation& station)
 {
-	out	<< "\tName: " << station.name
+	out << "ID: " << station.id
+		<< "\tName: " << station.name
 		<< "\tWorkshops: " << station.workshops
 		<< "\tWorkshops are worked: " << station.busyWorkshops
 		<< "\tEfficiency: " << station.efficiency << endl;
 	return out;
+}
+
+std::ifstream& operator >> (std::ifstream& fin, CompressorStation& station)
+{
+	fin >> station.id;
+	LOAD_LINE(fin, station.name);
+	fin >> station.workshops
+		>> station.busyWorkshops
+		>> station.efficiency;
+	return fin;
+}
+
+std::ofstream& operator << (std::ofstream& fout, const CompressorStation& station)
+{
+	fout << station.id << '\n'
+		<< station.name << '\n'
+		<< station.workshops << '\n'
+		<< station.busyWorkshops << '\n'
+		<< station.efficiency << endl;
+	return fout;
 }

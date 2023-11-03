@@ -2,7 +2,8 @@
 #include <iostream>
 #include <string>
 
-#define READ_LINE(in, str) getline(in>>std::ws, str); cerr << "Full line by READ_LINE: " << str << endl;
+#define READ_LINE(in, str) getline(in>>std::ws, str); cerr << str << endl;
+#define LOAD_LINE(in, str) getline(in>>std::ws, str);
 
 using namespace std;
 
@@ -33,6 +34,6 @@ type CorrectInput(type min, type max) {
 		cin.ignore(10000, '\n');
 		cout << "Enter a value from " << min << " to " << max << ": ";
 	}
-	std::cerr << "User entered item with function CorrectInput: " << item << endl;
+	std::cerr << item << endl;
 	return item;
 }
