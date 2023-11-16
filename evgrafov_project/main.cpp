@@ -209,6 +209,15 @@ void EditMenu() {
 		<< "Enter a number from 0 to 4: ";
 }
 
+void NetworkMenu() {
+	cout << "1. Connect pipeline" << endl
+		<< "2. Disconnect pipeline" << endl
+		<< "3. Show network" << endl
+		<< "4. Network's sort" << endl
+		<< "0. Return to main MENU" << endl << endl
+		<< "Enter a number from 0 to 4: ";
+}
+
 void PrintMenu() {
 	cout << "1. Add a pipeline" << endl
 		<< "2. Add a compressor station" << endl
@@ -224,8 +233,9 @@ void PrintMenu() {
 		<< "12. Find stations by name" << endl
 		<< "13. Find stations by percent of not working workshops" << endl
 		<< "14. Pack editing of pipelines" << endl
+		<< "15. Gas Transmission Network" << endl
 		<< "0. Exit" << endl << endl
-		<< "Enter a number from 0 to 14: ";
+		<< "Enter a number from 0 to 15: ";
 }
 
 int main() {
@@ -237,7 +247,7 @@ int main() {
 	unordered_map<int, CompressorStation> stations;
 	while (1) {
 		PrintMenu();
-		switch (CorrectInput(0, 14)) {
+		switch (CorrectInput(0, 15)) {
 		case 1: {
 			Pipeline pipe;
 			cin >> pipe;
@@ -300,7 +310,6 @@ int main() {
 			if (fin.is_open()) {
 				pipes = ClearPipes(pipes);
 				stations = ClearStations(stations);
-				
 				int count_p;
 				fin >> count_p;
 				while (count_p--) {
@@ -413,6 +422,35 @@ int main() {
 					for (auto& [id, pipe] : pipes) {
 						cout << pipe << endl;
 					}
+					break;
+				}
+				case 0: {
+					flag = false;
+					break;
+				}
+				}
+			}
+			break;
+		}
+		case 15: {
+			bool flag = true;
+			while (flag) {
+				NetworkMenu();
+				switch (CorrectInput(0, 4)) {
+				case 1: {
+					
+					break;
+				}
+				case 2: {
+
+					break;
+				}
+				case 3: {
+
+					break;
+				}
+				case 4: {
+
 					break;
 				}
 				case 0: {

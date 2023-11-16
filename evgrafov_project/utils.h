@@ -37,3 +37,5 @@ type CorrectInput(type min, type max) {
 	std::cerr << item << endl;
 	return item;
 }
+
+int CorrectDiametre();

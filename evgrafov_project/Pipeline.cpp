@@ -30,7 +30,7 @@ std::istream& operator >> (std::istream& in, Pipeline& pipe)
 	std::cout << "Enter a length: ";
 	pipe.length = CorrectInput(0.1, 999.9);
 	std::cout << "Enter a diametre: ";
-	pipe.diametre = CorrectInput(100, 1400);
+	pipe.diametre = CorrectDiametre();
 	std::cout << "Type \"1\", if a pipeline is repaired, type \"0\" - if it isn't: ";
 	pipe.isRepaired = CorrectInput(0, 1);
 	return in;
