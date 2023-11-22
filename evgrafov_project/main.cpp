@@ -48,7 +48,12 @@ int CorrectIntID() {
 }
 
 void EditPipeline(unordered_map<int, Pipeline>& pipes, const int& id) {
-	pipes[id].isRepaired = !(pipes[id].isRepaired);
+	if (pipes[id].CSin == -1) {
+		pipes[id].isRepaired = !(pipes[id].isRepaired);
+	}
+	else {
+		cout << "This pipeline is in GTN. Disconnect it to edit it" << endl;
+	}
 }
 
 void EditStation(unordered_map<int, CompressorStation>& stations) {
@@ -56,16 +61,21 @@ void EditStation(unordered_map<int, CompressorStation>& stations) {
 	int id;
 	id = CorrectIntID();
 	if (CheckID(stations, id)) {
-		string decision;
-		cout << "Enter \"+\", if you want to start one workshop, enter \"-\" - if you want to stop one workshop: ";
-		cin >> decision;
-		if (decision == "+" && stations[id].busyWorkshops < stations[id].workshops) {
-			stations[id].busyWorkshops++;
+		if (stations[id].link == false) {
+			string decision;
+			cout << "Enter \"+\", if you want to start one workshop, enter \"-\" - if you want to stop one workshop: ";
+			cin >> decision;
+			if (decision == "+" && stations[id].busyWorkshops < stations[id].workshops) {
+				stations[id].busyWorkshops++;
+			}
+			if (decision == "-" && stations[id].busyWorkshops > 0) {
+				stations[id].busyWorkshops--;
+			}
+			cerr << decision << endl;
 		}
-		if (decision == "-" && stations[id].busyWorkshops > 0) {
-			stations[id].busyWorkshops--;
+		else {
+			cout << "This CS is in GTN. Disconnect it to edit it" << endl;
 		}
-		cerr << decision << endl;
 	}
 	else {
 		cout << "No compressor station with such ID" << endl;
@@ -97,7 +107,12 @@ CompressorStation LoadStation(ifstream& fin) {
 }
 
 void DeletePipe(unordered_map<int, Pipeline>& pipes, const int& id) {
-	pipes.erase(id);
+	if (pipes[id].CSin == -1) {
+		pipes.erase(id);
+	}
+	else {
+		cout << "This pipeline is in GTN. Disconnect it to delete it" << endl;
+	}
 }
 
 void DeleteStation(unordered_map<int, CompressorStation>& stations) {
@@ -105,7 +120,12 @@ void DeleteStation(unordered_map<int, CompressorStation>& stations) {
 	int id;
 	id = CorrectIntID();
 	if (CheckID(stations, id)) {
-		stations.erase(id);
+		if (stations[id].link == false) {
+			stations.erase(id);
+		}
+		else {
+			cout << "This CS is in GTN. Disconnect it to delete it" << endl;
+		}
 	}
 	else {
 		cout << "No station with such ID" << endl;
@@ -198,6 +218,46 @@ unordered_set<int> PackEdit(unordered_map<int, Pipeline>& pipes) {
 	}
 	}
 	return pipesID;
+}
+
+int getPipelineID(unordered_map<int, Pipeline>& pipes) {
+	int dia;
+	int pipeID = 0;
+	cout << "Enter a pipeline's diametre: ";
+	dia = CorrectDiametre();
+	for (auto& [id, pipe] : pipes) {
+		if (dia == pipe.diametre && pipe.isRepaired == false && pipe.CSin == -1) {
+			pipeID = pipe.getPipeID();
+			break;
+		}
+	}
+	if (!pipeID) {
+		cout << "No such pipeline. Create new one:" << endl;
+		Pipeline pipe;
+		cout << "Type a pipeline name: ";
+		READ_LINE(cin, pipe.kilometre);
+		cout << "Enter a length: ";
+		pipe.length = CorrectInput(0.1, 999.9);
+		pipe.diametre = dia;
+		pipe.isRepaired = false;
+		pipes.insert(pair{ pipe.getPipeID(), pipe });
+		pipeID = pipe.getPipeID();
+	}
+	return pipeID;
+}
+
+int getInCSID() {
+	int in;
+	cout << "Enter an in CS's id: ";
+	in = CorrectIntID();
+	return in;
+}
+
+int getOutCSID() {
+	int out;
+	cout << "Enter an out CS's id: ";
+	out = CorrectIntID();
+	return out;
 }
 
 void EditMenu() {
@@ -316,7 +376,7 @@ int main() {
 					Pipeline pipe = LoadPipeline(fin);
 					pipes.insert(pair{ pipe.getPipeID(), pipe });
 					pipe.MaxID = pipe.getPipeID();
-					
+
 				}
 				int count_s;
 				fin >> count_s;
@@ -438,7 +498,17 @@ int main() {
 				NetworkMenu();
 				switch (CorrectInput(0, 4)) {
 				case 1: {
-					
+					int pipeID = getPipelineID(pipes);
+					int in = getInCSID();
+					int out = getOutCSID();
+					if (CheckID(stations, in) && CheckID(stations, out) && in != out && stations[in].busyWorkshops < stations[in].workshops && stations[out].busyWorkshops < stations[out].workshops) {
+						stations[in].busyWorkshops++;
+						stations[out].busyWorkshops++;
+						stations[in].link = true;
+						stations[out].link = true;
+						pipes[pipeID].CSin = in;
+						pipes[pipeID].CSout = out;
+					}
 					break;
 				}
 				case 2: {

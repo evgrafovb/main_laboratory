@@ -4,8 +4,8 @@
 int CorrectDiametre()
 {
 	int dia;
-	unordered_set<int> diametres = { 500, 700, 1000, 1400 };
-	while ((cin >> dia).fail() || !(diametres.contains(dia))) {
+	const int diametres[] = {500, 700, 1000, 1400};
+	while ((cin >> dia).fail() || find(begin(diametres), end(diametres), dia) == end(diametres)) {
 		cin.clear();
 		cin.ignore(10000, '\n');
 		cout << "Enter 500, 700, 1000 or 1400 for diametre: ";

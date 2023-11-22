@@ -14,6 +14,7 @@ public:
 	int workshops;
 	int busyWorkshops;
 	char efficiency;
+	bool link;
 
 	CompressorStation();
 

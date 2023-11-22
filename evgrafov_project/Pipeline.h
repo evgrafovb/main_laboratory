@@ -14,6 +14,8 @@ public:
 	double length;
 	int diametre;
 	bool isRepaired;
+	int CSin;
+	int CSout;
 
 	Pipeline();
 
