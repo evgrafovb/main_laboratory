@@ -61,7 +61,7 @@ void EditStation(unordered_map<int, CompressorStation>& stations) {
 	int id;
 	id = CorrectIntID();
 	if (CheckID(stations, id)) {
-		if (stations[id].link == false) {
+		if (stations[id].start == 0 && stations[id].end == 0) {
 			string decision;
 			cout << "Enter \"+\", if you want to start one workshop, enter \"-\" - if you want to stop one workshop: ";
 			cin >> decision;
@@ -120,7 +120,7 @@ void DeleteStation(unordered_map<int, CompressorStation>& stations) {
 	int id;
 	id = CorrectIntID();
 	if (CheckID(stations, id)) {
-		if (stations[id].link == false) {
+		if (stations[id].start == 0 && stations[id].end == 0) {
 			stations.erase(id);
 		}
 		else {
@@ -269,15 +269,6 @@ void EditMenu() {
 		<< "Enter a number from 0 to 4: ";
 }
 
-void NetworkMenu() {
-	cout << "1. Connect pipeline" << endl
-		<< "2. Disconnect pipeline" << endl
-		<< "3. Show network" << endl
-		<< "4. Network's sort" << endl
-		<< "0. Return to main MENU" << endl << endl
-		<< "Enter a number from 0 to 4: ";
-}
-
 void PrintMenu() {
 	cout << "1. Add a pipeline" << endl
 		<< "2. Add a compressor station" << endl
@@ -293,9 +284,12 @@ void PrintMenu() {
 		<< "12. Find stations by name" << endl
 		<< "13. Find stations by percent of not working workshops" << endl
 		<< "14. Pack editing of pipelines" << endl
-		<< "15. Gas Transmission Network" << endl
+		<< "15. Connect pipeline" << endl
+		<< "16. Disconnect pipeline" << endl
+		<< "17. Show Gas Transmission Network" << endl
+		<< "18. Network's sort" << endl
 		<< "0. Exit" << endl << endl
-		<< "Enter a number from 0 to 15: ";
+		<< "Enter a number from 0 to 18: ";
 }
 
 int main() {
@@ -307,7 +301,7 @@ int main() {
 	unordered_map<int, CompressorStation> stations;
 	while (1) {
 		PrintMenu();
-		switch (CorrectInput(0, 15)) {
+		switch (CorrectInput(0, 18)) {
 		case 1: {
 			Pipeline pipe;
 			cin >> pipe;
@@ -493,42 +487,46 @@ int main() {
 			break;
 		}
 		case 15: {
-			bool flag = true;
-			while (flag) {
-				NetworkMenu();
-				switch (CorrectInput(0, 4)) {
-				case 1: {
-					int pipeID = getPipelineID(pipes);
-					int in = getInCSID();
-					int out = getOutCSID();
-					if (CheckID(stations, in) && CheckID(stations, out) && in != out && stations[in].busyWorkshops < stations[in].workshops && stations[out].busyWorkshops < stations[out].workshops) {
-						stations[in].busyWorkshops++;
-						stations[out].busyWorkshops++;
-						stations[in].link = true;
-						stations[out].link = true;
-						pipes[pipeID].CSin = in;
-						pipes[pipeID].CSout = out;
-					}
-					break;
-				}
-				case 2: {
+			int pipeID = getPipelineID(pipes);
+			int in = getInCSID();
+			int out = getOutCSID();
+			if (CheckID(stations, in) && CheckID(stations, out) && in != out && stations[in].busyWorkshops < stations[in].workshops && stations[out].busyWorkshops < stations[out].workshops) {
+				stations[in].busyWorkshops++;
+				stations[out].busyWorkshops++;
+				stations[in].start++;
+				stations[out].end++;
+				pipes[pipeID].CSin = in;
+				pipes[pipeID].CSout = out;
+			}
+			break;
+		}
+		case 16: {
+			cout << "Enter a pipeline's ID for diconnection: ";
+			int pipeID = CorrectIntID();
+			if (CheckID(pipes, pipeID) && pipes[pipeID].CSin != -1) {
+				stations[pipes[pipeID].CSin].start--;
+				stations[pipes[pipeID].CSout].end--;
+				pipes[pipeID].CSin = -1;
+				pipes[pipeID].CSout = -1;
 
-					break;
-				}
-				case 3: {
-
-					break;
-				}
-				case 4: {
-
-					break;
-				}
-				case 0: {
-					flag = false;
-					break;
-				}
+			}
+			break;
+		}
+		case 17: {
+			for (auto& [id, pipe] : pipes) {
+				if (pipe.CSin != -1) {
+					cout << pipe << endl;
 				}
 			}
+			for (auto& [id, station] : stations) {
+				if (station.start > 0 || station.end > 0) {
+					cout << station << endl;
+				}
+			}
+			break;
+		}
+		case 18: {
+
 			break;
 		}
 		case 0:

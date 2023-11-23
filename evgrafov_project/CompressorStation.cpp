@@ -16,7 +16,8 @@ CompressorStation::CompressorStation()
 	workshops = 1;
 	busyWorkshops = 0;
 	efficiency = 'A';
-	link = false;
+	start = 0;
+	end = 0;
 }
 
 int CompressorStation::getStationID() const
@@ -43,8 +44,9 @@ std::ostream& operator << (std::ostream& out, const CompressorStation& station)
 		<< "\tName: " << station.name
 		<< "\tWorkshops: " << station.workshops
 		<< "\tWorkshops are worked: " << station.busyWorkshops
-		<< "\tEfficiency: " << station.efficiency 
-		<< "\tLink: " << station.link << endl;
+		<< "\tEfficiency: " << station.efficiency
+		<< "\tTimes being start CS: " << station.start
+		<< "\tTimes being end CS: " << station.end << endl;
 	return out;
 }
 
@@ -55,7 +57,8 @@ std::ifstream& operator >> (std::ifstream& fin, CompressorStation& station)
 	fin >> station.workshops
 		>> station.busyWorkshops
 		>> station.efficiency
-		>> station.link;
+		>> station.start
+		>> station.end;
 	return fin;
 }
 
@@ -66,6 +69,7 @@ std::ofstream& operator << (std::ofstream& fout, const CompressorStation& statio
 		<< station.workshops << '\n'
 		<< station.busyWorkshops << '\n'
 		<< station.efficiency << '\n'
-		<< station.link << endl;
+		<< station.start << '\n' 
+		<< station.end << endl;
 	return fout;
 }
