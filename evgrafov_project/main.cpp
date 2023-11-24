@@ -8,6 +8,7 @@
 #include "CompressorStation.h"
 #include "utils.h"
 #include <unordered_map>
+#include <queue>
 
 using namespace std;
 
@@ -260,6 +261,35 @@ int getOutCSID() {
 	return out;
 }
 
+vector<int> TopologicalSort(vector<vector<int>>& rebra, unordered_map<int, int>& stepeny_vershin) {
+	int vershiny = stepeny_vershin.size();
+	vector<int> result;
+	queue<int> q;
+	for (auto& [id, stepen] : stepeny_vershin) {
+		if (stepen == 0) {
+			q.push(id);
+		}
+	}
+	while (!q.empty()) {
+		int vershina = q.front();
+		q.pop();
+		result.insert(result.begin(), vershina);
+		for (auto& pair : rebra) {
+			if (pair[1] == vershina) {
+				stepeny_vershin[pair[0]]--;
+				if (stepeny_vershin[pair[0]] == 0) {
+					q.push(pair[0]);
+				}
+			}
+		}
+	}
+	if (result.size() != vershiny) {
+		cout << "There is a cycle in GTN. Topological sort is imposssible" << endl;
+		result.resize(0);
+	}
+	return result;
+}
+
 void EditMenu() {
 	cout << "1. Select pipelines by ID" << endl
 		<< "2. Edit all found pipelines" << endl
@@ -286,7 +316,7 @@ void PrintMenu() {
 		<< "14. Pack editing of pipelines" << endl
 		<< "15. Connect pipeline" << endl
 		<< "16. Disconnect pipeline" << endl
-		<< "17. Show Gas Transmission Network" << endl
+		<< "17. Show all objects in Gas Transmission Network" << endl
 		<< "18. Network's sort" << endl
 		<< "0. Exit" << endl << endl
 		<< "Enter a number from 0 to 18: ";
@@ -526,7 +556,24 @@ int main() {
 			break;
 		}
 		case 18: {
-
+			vector < vector<int>> rebra;
+			for (auto& [id, pipe] : pipes) {
+				if (pipe.CSin != -1) {
+					rebra.push_back({ pipe.CSin, pipe.CSout });
+				}
+			}
+			unordered_map<int, int> stepeny_vershin;
+			for (auto& [id, station] : stations) {
+				if (station.start > 0 || station.end > 0) {
+					stepeny_vershin.insert(pair{ id, station.start });
+				}
+			}
+			vector<int> sorted_graph = TopologicalSort(rebra, stepeny_vershin);
+			if (sorted_graph.size() != 0) {
+				for (int vershina : sorted_graph) {
+					cout << stations[vershina] << endl;
+				}
+			}
 			break;
 		}
 		case 0:
