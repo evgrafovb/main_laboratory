@@ -130,11 +130,13 @@
   <ItemGroup>
     <ClCompile Include="CompressorStation.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Network.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CompressorStation.h" />
+    <ClInclude Include="Network.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>

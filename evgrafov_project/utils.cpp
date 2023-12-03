@@ -13,3 +13,14 @@ int CorrectDiametre()
 	std::cerr << dia << endl;
 	return dia;
 }
+
+int CorrectIntID() {
+	int id;
+	while ((cin >> id).fail()) {
+		cin.clear();
+		cin.ignore(10000, '\n');
+		cout << "Enter an integer: ";
+	}
+	cerr << id << endl;
+	return id;
+}

@@ -39,3 +39,4 @@ type CorrectInput(type min, type max) {
 }
 
 int CorrectDiametre();
+int CorrectIntID();

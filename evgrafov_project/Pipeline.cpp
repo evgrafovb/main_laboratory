@@ -3,14 +3,18 @@
 
 int Pipeline::MaxID = 0;
 
-void Pipeline::Reset()
+void Pipeline::ResetMaxID()
 {
 	MaxID = 0;
 }
 
+void Pipeline::SetMaxID() const
+{
+	MaxID = id;
+}
+
 Pipeline::Pipeline()
 {
-	//MaxID++;
 	id = ++MaxID;
 	kilometre = "Unknown";
 	length = 0.1;
@@ -20,9 +24,57 @@ Pipeline::Pipeline()
 	CSout = -1;
 }
 
+Pipeline Pipeline::CreatePipe(int d)
+{
+	Pipeline pipe;
+	cout << "Type a pipeline name: ";
+	READ_LINE(cin, pipe.kilometre);
+	cout << "Enter a length: ";
+	pipe.length = CorrectInput(0.1, 999.9);
+	if (d > 0)
+		pipe.diametre = d;
+	else
+	{
+		cout << "Enter a d: ";
+		pipe.diametre = CorrectDiametre();
+	}
+	pipe.isRepaired = false;
+	return pipe;
+}
+
 int Pipeline::getPipeID() const
 {
 	return id;
+}
+
+int Pipeline::getPipeDiametre() const
+{
+	return diametre;
+}
+
+double Pipeline::getPipeLength() const
+{
+	return length;
+}
+
+int Pipeline::getPipeCSin() const
+{
+	return CSin;
+}
+
+int Pipeline::getPipeCSout() const
+{
+	return CSout;
+}
+
+void Pipeline::setPipeCSin(int id)
+{
+	CSin = id;
+}
+
+void Pipeline::setPipeCSout(int id)
+{
+	CSout = id;
 }
 
 std::istream& operator >> (std::istream& in, Pipeline& pipe)

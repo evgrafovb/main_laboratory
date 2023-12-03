@@ -5,21 +5,28 @@
 class Pipeline
 {
 	int id;
-	/*static int MaxID;*/
-public:
-
-	static void Reset();
 	static int MaxID;
-	std::string kilometre;
 	double length;
 	int diametre;
-	bool isRepaired;
 	int CSin;
 	int CSout;
 
+public:
+	std::string kilometre;
+	bool isRepaired;
+
+	static void ResetMaxID();
+	void SetMaxID() const;
 	Pipeline();
 
+	static Pipeline CreatePipe(int d = 0);
 	int getPipeID() const;
+	int getPipeDiametre() const;
+	double getPipeLength() const;
+	int getPipeCSin() const;
+	int getPipeCSout() const;
+	void setPipeCSin(int id = -1);
+	void setPipeCSout(int id = -1);
 
 	friend std::istream& operator >> (std::istream& in, Pipeline& pipe);
 	friend std::ostream& operator << (std::ostream& out, const Pipeline& pipe);

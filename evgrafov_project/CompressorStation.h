@@ -5,21 +5,30 @@
 class CompressorStation
 {
 	int id;
-	/*static int MaxID;*/
-public:
-
-	static void Reset();
-	static int MaxID;
-	std::string name;
+	static int MaxID;	
 	int workshops;
 	int busyWorkshops;
-	char efficiency;
 	int start;
 	int end;
+public:
+	std::string name;
+	char efficiency;
 
+	static void ResetMaxID();
+	void SetMaxID() const;
 	CompressorStation();
+	void StartWorkshop();
+	void FinishWorkshop();
+	void StartAmountIncrease();
+	void EndAmountIncrease();
+	void StartAmountDicrease();
+	void EndAmountDicrease();
 
 	int getStationID() const;
+	int getStationWorks() const;
+	int getStationBusyWorks() const;
+	int getStationStart() const;
+	int getStationEnd() const;
 
 	friend std::istream& operator >> (std::istream& in, CompressorStation& station);
 	friend std::ostream& operator << (std::ostream& out, const CompressorStation& station);
