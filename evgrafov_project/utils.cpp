@@ -1,5 +1,6 @@
 #include "utils.h"
 #include <unordered_set>
+#include <filesystem>
 
 int CorrectDiametre()
 {
@@ -23,4 +24,14 @@ int CorrectIntID() {
 	}
 	cerr << id << endl;
 	return id;
+}
+
+string FileName() {
+	string file_name;
+	cout << "Enter a file name: ";
+	READ_LINE(cin, file_name);
+	if (!(filesystem::exists(file_name))) {
+		cout << "No such file in directory" << endl;
+	}
+	return file_name;
 }

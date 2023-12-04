@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <unordered_map>
 
 #define READ_LINE(in, str) getline(in>>std::ws, str); cerr << str << endl;
 #define LOAD_LINE(in, str) getline(in>>std::ws, str);
@@ -38,5 +39,12 @@ type CorrectInput(type min, type max) {
 	return item;
 }
 
+template <typename type>
+bool CheckID(const unordered_map<int, type>& items, const int& id) {
+	return (items.contains(id));
+}
+
+
 int CorrectDiametre();
 int CorrectIntID();
+string FileName();

@@ -55,7 +55,7 @@ void CompressorStation::StartAmountDicrease()
 
 void CompressorStation::EndAmountDicrease()
 {
-	start--;
+	end--;
 }
 
 int CompressorStation::getStationID() const

@@ -24,8 +24,7 @@ Pipeline::Pipeline()
 	CSout = -1;
 }
 
-Pipeline Pipeline::CreatePipe(int d)
-{
+Pipeline Pipeline::CreatePipe(int d) {
 	Pipeline pipe;
 	cout << "Type a pipeline name: ";
 	READ_LINE(cin, pipe.kilometre);
@@ -35,7 +34,7 @@ Pipeline Pipeline::CreatePipe(int d)
 		pipe.diametre = d;
 	else
 	{
-		cout << "Enter a d: ";
+		cout << "Enter a diametre: ";
 		pipe.diametre = CorrectDiametre();
 	}
 	pipe.isRepaired = false;
