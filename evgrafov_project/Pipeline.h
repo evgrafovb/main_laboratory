@@ -10,7 +10,6 @@ class Pipeline
 	int diametre;
 	int CSin;
 	int CSout;
-
 public:
 	std::string kilometre;
 	bool isRepaired;
@@ -18,8 +17,8 @@ public:
 	static void ResetMaxID();
 	void SetMaxID() const;
 	Pipeline();
-
 	static Pipeline CreatePipe(int d = 0);
+	
 	int getPipeID() const;
 	int getPipeDiametre() const;
 	double getPipeLength() const;

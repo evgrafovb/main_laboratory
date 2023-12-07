@@ -9,7 +9,6 @@
 #include "Network.h"
 #include <unordered_map>
 #include <queue>
-#define INF INT_MAX
 
 using namespace std;
 
@@ -86,10 +85,6 @@ void FindMenu() {
 		<< "Enter a number from 1 to 2: ";
 }
 
-//void PrintFoundPipes(const int& id, unordered_map<int, Pipeline>& pipes) {
-//	cout << pipes[id];
-//}
-
 unordered_set<int> PackEdit(Network& net) {
 	unordered_set<int> pipesID{};
 	FindMenu();
@@ -162,14 +157,14 @@ void PrintMenu() {
 		<< "10. Find stations by name" << endl
 		<< "11. Find stations by percent of not working workshops" << endl
 		<< "12. Pack editing of pipelines" << endl
-		<< "15. Connect pipeline" << endl
-		<< "16. Disconnect pipeline" << endl
-		<< "17. Show all objects in Gas Transmission Network" << endl
-		<< "18. Network's sort" << endl
-		<< "19. Find the shortest way" << endl
-		<< "20. Calculate max stream" << endl
+		<< "13. Connect pipeline" << endl
+		<< "14. Disconnect pipeline" << endl
+		<< "15. Show all objects in Gas Transmission Network" << endl
+		<< "16. Network's sort" << endl
+		<< "17. Find the shortest way" << endl
+		<< "18. Calculate max stream" << endl
 		<< "0. Exit" << endl << endl
-		<< "Enter a number from 0 to 20: ";
+		<< "Enter a number from 0 to 18: ";
 }
 
 int main() {
@@ -180,7 +175,7 @@ int main() {
 	Network net;
 	while (1) {
 		PrintMenu();
-		switch (CorrectInput(0, 20)) {
+		switch (CorrectInput(0, 18)) {
 		case 1: {
 			Pipeline pipe;
 			cin >> pipe;
@@ -265,48 +260,30 @@ int main() {
 			}
 			break;
 		}
-		case 15: {
+		case 13: {
 			net.AddConnection();
 			break;
 		}
-		case 16: {
+		case 14: {
 			net.Disconnection();
 			break;
 		}
-		case 17: {
+		case 15: {
 			net.ShowNetwork();
 			break;
 		}
-		case 18: {
+		case 16: {
 			net.TopologicalSort();
 			break;
 		}
-		/*case 19: {
-			cout << "Enter CS's ID to find the shortest paths: ";
-			int stationID = CorrectIntID();
-			if (CheckID(stations, stationID)) {
-				int vershiny = 0;
-				for (auto& [id, station] : stations) {
-					if (station.getStationStart() > 0 || station.getStationEnd() > 0) {
-						if (id > vershiny) {
-							vershiny = id;
-						}
-					}
-				}
-				vector<vector<pair<int, double>>> graph(vershiny+1);
-				for (auto& [id, pipe] : pipes) {
-					if (pipe.getPipeCSin() != -1) {
-						graph[pipe.getPipeCSin()].push_back({pipe.getPipeCSin(), pipe.getPipeLength()});
-						graph[pipe.getPipeCSout()].push_back({pipe.getPipeCSin(), pipe.getPipeLength()});
-					}
-				}
-			}
+		case 17: {
+			net.FindWay();
 			break;
 		}
-		case 20: {
+		case 18: {
 
 			break;
-		}*/
+		}
 		case 0:
 			return 0;
 		}

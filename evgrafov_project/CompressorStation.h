@@ -17,6 +17,7 @@ public:
 	static void ResetMaxID();
 	void SetMaxID() const;
 	CompressorStation();
+
 	void StartWorkshop();
 	void FinishWorkshop();
 	void StartAmountIncrease();

@@ -276,6 +276,57 @@ void Network::TopologicalSort() {
 	}
 }
 
+vector<vector<pair<int, double>>> Network::CreateWeights() {
+	int vershiny = 0;
+	for (auto& [id, station] : stations) {
+		if (station.getStationStart() > 0 || station.getStationEnd() > 0) {
+			if (id > vershiny) {
+				vershiny = id;
+			}
+		}
+	}
+	vector<vector<pair<int, double>>> weights(vershiny + 1);
+	for (auto& [id, pipe] : pipes) {
+		if (pipe.getPipeCSin() != -1) {
+			weights[pipe.getPipeCSin()].push_back({ pipe.getPipeCSout(), pipe.getPipeLength() });
+		}
+	}
+	return weights;
+}
+
+void Network::FindWay() {
+	cout << "Enter source CS's ID to find the shortest distances: ";
+	int stationID = CorrectIntID();
+	if (CheckID(stations, stationID)) {
+		auto weights = CreateWeights();
+		int n = weights.size();
+		vector<double> distances(n, INF);
+		vector<bool> visited(n, false);
+		distances[stationID] = 0;
+		priority_queue<pair<int, double>, vector<pair<int, double>>, greater<pair<int, double>>> pq;
+		pq.push({ stationID, 0.0 });
+		while (!pq.empty()) {
+			int v1 = pq.top().first;
+			pq.pop();
+			visited[v1] = true;
+			for (auto& rebro : weights[v1]) {
+				int v2 = rebro.first;
+				double weight = rebro.second;
+				if (!visited[v2] && distances[v1] + weight < distances[v2]) {
+					distances[v2] = distances[v1] + weight;
+					pq.push({ v2, distances[v2] });
+				}
+			}
+		}
+		cout << "Vershina\tDistances from source" << endl;
+		for (int i = 0; i < n; i++) {
+			if (distances[i] != INF) {
+				cout << i << "\t\t" << distances[i] << endl;
+			}
+		}
+	}
+}
+
 //bool Network::CheckByName(const Pipeline& pipe, string param) {
 //	return (pipe.kilometre.find(param) != string::npos);
 //}

@@ -11,6 +11,8 @@ class Network
 	unordered_map<int, CompressorStation> stations;
 
 public:
+	unordered_map<int, Pipeline> getPipelines();
+	unordered_map<int, CompressorStation> getStations();
 	void AddNewPipe(const Pipeline& pipe);
 	void AddNewStation(const CompressorStation& station);
 	void ShowAllObjects();
@@ -28,9 +30,9 @@ public:
 	int getPipelineID();
 	vector<vector<int>> CreateRibs();
 	unordered_map<int, int> StepenyVershin();
-	unordered_map<int, Pipeline> getPipelines();
-	unordered_map<int, CompressorStation> getStations();
 	void TopologicalSort();
+	vector<vector<pair<int, double>>> CreateWeights();
+	void FindWay();
 	/*bool CheckByName(const Pipeline& pipe, string param);
 	bool CheckByRepair(const Pipeline& pipe, bool param);
 	void FindAllPipelinesByName();

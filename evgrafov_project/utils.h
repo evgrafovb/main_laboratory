@@ -5,6 +5,7 @@
 
 #define READ_LINE(in, str) getline(in>>std::ws, str); cerr << str << endl;
 #define LOAD_LINE(in, str) getline(in>>std::ws, str);
+#define INF INT_MAX
 
 using namespace std;
 
