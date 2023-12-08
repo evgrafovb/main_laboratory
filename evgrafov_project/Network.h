@@ -11,8 +11,10 @@ class Network
 	unordered_map<int, CompressorStation> stations;
 
 public:
-	unordered_map<int, Pipeline> getPipelines();
-	unordered_map<int, CompressorStation> getStations();
+	const unordered_map<int, Pipeline>& getPipelines();
+	const unordered_map<int, CompressorStation>& getStations();
+	const Pipeline& getPipe(int id);
+	const CompressorStation& getStation(int id);
 	void AddNewPipe(const Pipeline& pipe);
 	void AddNewStation(const CompressorStation& station);
 	void ShowAllObjects();
@@ -28,33 +30,13 @@ public:
 	void Disconnection();
 	void ShowNetwork();
 	int getPipelineID();
+
 	vector<vector<int>> CreateRibs();
+	int StationsAmount();
 	unordered_map<int, int> StepenyVershin();
-	void TopologicalSort();
+	//void TopologicalSort();
 	vector<vector<pair<int, double>>> CreateWeights();
 	void FindWay();
-	/*bool CheckByName(const Pipeline& pipe, string param);
-	bool CheckByRepair(const Pipeline& pipe, bool param);
-	void FindAllPipelinesByName();
-	void FindAllPipelinesByRepair();*/
-
-	
-
+	vector<vector<int>> CreateCapacities();
+	//void FindMaxFlow();
 };
-
-//template <typename type>
-//using PipelineFilter = bool(*)(const Pipeline& pipe, type param);
-//
-//template <typename type>
-//unordered_set<int> FindPipelinesByFilter(const unordered_map<int, Pipeline>& pipes, PipelineFilter<type> f, type param) {
-//	unordered_set<int> result;
-//	for (auto& [id, pipe] : pipes) {
-//		if (f(pipe, param)) {
-//			result.insert(id);
-//		}
-//	}
-//	if (!(size(result))) {
-//		cout << "No pipelines found" << endl;
-//	}
-//	return result;
-//}

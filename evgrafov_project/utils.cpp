@@ -2,8 +2,7 @@
 #include <unordered_set>
 #include <filesystem>
 
-int CorrectDiametre()
-{
+int CorrectDiametre() {
 	int dia;
 	const int diametres[] = {500, 700, 1000, 1400};
 	while ((cin >> dia).fail() || find(begin(diametres), end(diametres), dia) == end(diametres)) {

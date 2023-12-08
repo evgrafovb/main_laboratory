@@ -7,6 +7,7 @@
 #include "CompressorStation.h"
 #include "utils.h"
 #include "Network.h"
+#include "Graph.h"
 #include <unordered_map>
 #include <queue>
 
@@ -67,7 +68,7 @@ void FindAllStationsByName(Network& net) {
 	cout << "Enter station name for searching: ";
 	READ_LINE(cin, name);
 	for (int id : FindStationsByFilter(net.getStations(), CheckByName, name)) {
-		cout << net.getStations()[id];
+		cout << net.getStation(id);
 	}
 }
 
@@ -75,7 +76,7 @@ void FindAllStationsByBusyWorkshops(Network& net) {
 	cout << "Enter percent of unworking stations for searching: ";
 	double percent = CorrectInput(0.0, 100.0);
 	for (int id : FindStationsByFilter(net.getStations(), CheckByUnworkingWorkshops, percent)) {
-		cout << net.getStations()[id];
+		cout << net.getStation(id);
 	}
 }
 
@@ -94,7 +95,7 @@ unordered_set<int> PackEdit(Network& net) {
 		cout << "Input pileline name for searching: ";
 		READ_LINE(cin, name);
 		for (int id : FindPipelinesByFilter(net.getPipelines(), CheckByName, name)) {
-			cout << net.getPipelines()[id];
+			cout << net.getPipe(id);
 			pipesID.insert(id);
 		}
 		break;
@@ -104,7 +105,7 @@ unordered_set<int> PackEdit(Network& net) {
 		cout << "Input station status for searching: ";
 		flag = CorrectInput(false, true);
 		for (int id : FindPipelinesByFilter(net.getPipelines(), CheckByRepair, flag)) {
-			cout << net.getPipelines()[id];
+			cout << net.getPipe(id);
 			pipesID.insert(id);
 		}
 		break;
@@ -121,7 +122,7 @@ unordered_set<int> SelectPipesID(Network& net) {
 		id = CorrectIntID();
 		if (id) {
 			if (CheckID(net.getPipelines(), id)) {
-				cout << net.getPipelines()[id];
+				cout << net.getPipe(id);
 				pipesID.insert(id);
 			}
 			else {
@@ -273,15 +274,22 @@ int main() {
 			break;
 		}
 		case 16: {
-			net.TopologicalSort();
+			auto rebra = net.CreateRibs();
+			auto stepeny_vershin = net.StepenyVershin();
+			Graph g(rebra, stepeny_vershin);
+			g.ShowTopologicalSort(g.TopologicalSort());
+			//net.TopologicalSort();
 			break;
 		}
 		case 17: {
+			//Graph g;
+			//g.FindWay();
 			net.FindWay();
 			break;
 		}
 		case 18: {
-
+			//Graph g;
+			//g.FindMaxFlow();
 			break;
 		}
 		case 0:

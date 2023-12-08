@@ -224,6 +224,18 @@ vector<vector<int>> Network::CreateRibs() {
 	return rebra;
 }
 
+int Network::StationsAmount() {
+	int vershiny = 0;
+	for (auto& [id, station] : stations) {
+		if (station.getStationStart() > 0 || station.getStationEnd() > 0) {
+			if (id > vershiny) {
+				vershiny = id;
+			}
+		}
+	}
+	return vershiny + 1;
+}
+
 unordered_map<int, int> Network::StepenyVershin() {
 	unordered_map<int, int> stepeny_vershin;
 	for (auto& [id, station] : stations) {
@@ -234,58 +246,62 @@ unordered_map<int, int> Network::StepenyVershin() {
 	return stepeny_vershin;
 }
 
-unordered_map<int, Pipeline> Network::getPipelines() {
+const unordered_map<int, Pipeline>& Network::getPipelines() {
 	return pipes;
 }
 
-unordered_map<int, CompressorStation> Network::getStations() {
+const unordered_map<int, CompressorStation>& Network::getStations() {
 	return stations;
 }
 
-void Network::TopologicalSort() {
-	auto rebra = CreateRibs();
-	auto stepeny_vershin = StepenyVershin();
-	int vershiny = stepeny_vershin.size();
-	vector<int> result;
-	queue<int> q;
-	for (auto& [id, stepen] : stepeny_vershin) {
-		if (stepen == 0) {
-			q.push(id);
-		}
-	}
-	while (!q.empty()) {
-		int vershina = q.front();
-		q.pop();
-		result.insert(result.begin(), vershina);
-		for (auto& pair : rebra) {
-			if (pair[1] == vershina) {
-				stepeny_vershin[pair[0]]--;
-				if (stepeny_vershin[pair[0]] == 0) {
-					q.push(pair[0]);
-				}
-			}
-		}
-	}
-	if (result.size() != vershiny) {
-		cout << "There is a cycle in GTN. Topological sort is imposssible" << endl;
-	}
-	else {
-		for (int vershina : result) {
-			cout << stations[vershina] << endl;
-		}
+const Pipeline& Network::getPipe(int id) {
+	if (CheckID(pipes, id)) {
+		return pipes[id];
 	}
 }
 
-vector<vector<pair<int, double>>> Network::CreateWeights() {
-	int vershiny = 0;
-	for (auto& [id, station] : stations) {
-		if (station.getStationStart() > 0 || station.getStationEnd() > 0) {
-			if (id > vershiny) {
-				vershiny = id;
-			}
-		}
+const CompressorStation& Network::getStation(int id) {
+	if (CheckID(stations, id)) {
+		return stations[id];
 	}
-	vector<vector<pair<int, double>>> weights(vershiny + 1);
+}
+
+//void Network::TopologicalSort() {
+//	auto rebra = CreateRibs();
+//	auto stepeny_vershin = StepenyVershin();
+//	int vershiny = stepeny_vershin.size();
+//	vector<int> result;
+//	queue<int> q;
+//	for (auto& [id, stepen] : stepeny_vershin) {
+//		if (stepen == 0) {
+//			q.push(id);
+//		}
+//	}
+//	while (!q.empty()) {
+//		int vershina = q.front();
+//		q.pop();
+//		result.insert(result.begin(), vershina);
+//		for (auto& pair : rebra) {
+//			if (pair[1] == vershina) {
+//				stepeny_vershin[pair[0]]--;
+//				if (stepeny_vershin[pair[0]] == 0) {
+//					q.push(pair[0]);
+//				}
+//			}
+//		}
+//	}
+//	if (result.size() != vershiny) {
+//		cout << "There is a cycle in GTN. Topological sort is imposssible" << endl;
+//	}
+//	else {
+//		for (int vershina : result) {
+//			cout << stations[vershina] << endl;
+//		}
+//	}
+//}
+
+vector<vector<pair<int, double>>> Network::CreateWeights() {
+	vector<vector<pair<int, double>>> weights(StationsAmount());
 	for (auto& [id, pipe] : pipes) {
 		if (pipe.getPipeCSin() != -1) {
 			weights[pipe.getPipeCSin()].push_back({ pipe.getPipeCSout(), pipe.getPipeLength() });
@@ -327,29 +343,81 @@ void Network::FindWay() {
 	}
 }
 
-//bool Network::CheckByName(const Pipeline& pipe, string param) {
-//	return (pipe.kilometre.find(param) != string::npos);
-//}
+vector<vector<int>> Network::CreateCapacities() {
+	vector<vector<int>> capacities(StationsAmount());
+	for (auto& [id, pipe] : pipes) {
+		if (pipe.getPipeCSin() != -1) {
+			capacities[pipe.getPipeCSin()][pipe.getPipeCSout()] = pipe.getPipeDiametre();
+		}
+	}
+	return capacities;
+}
+
+//void Network::FindMaxFlow() {
+//	cout << "Enter source CS's ID to find max flow: ";
+//	int source = CorrectIntID();
+//	cout << "Enter sink CS's ID to find max flow: ";
+//	int sink = CorrectIntID();
+//	if (CheckID(stations, source) && CheckID(stations, sink) && source != sink) {
+//		vector<vector<int>> residualGraph(StationsAmount(), vector<int>(StationsAmount(), 0));
+//		int n = StationsAmount();
+//		//vector<vector<int>> residualGraph(n); // Residual graph to store the residual capacities
+//		//vector<int> parent(n); // Array to store the augmented path
 //
-//bool Network::CheckByRepair(const Pipeline& pipe, bool param) {
-//	return (pipe.isRepaired == param);
-//}
+//		// Initialize the residual graph as the original graph
+//		/*for (int i = 0; i < n; i++) {
+//			for (int j = 0; j < n; j++) {
+//				residualGraph[i][j] = capacities[i][j];
+//			}
+//		}*/
 //
-//void Network::FindAllPipelinesByName() {
-//	string name;
-//	cout << "Enter pileline name for searching: ";
-//	READ_LINE(cin, name);
-//	unordered_set<int> result = FindPipelinesByFilter(pipes, CheckByName, name);
-//	for (int id : result) {
-//		cout << pipes[id];
-//	}
-//}
+//		int maxFlow = 0; // Initialize the maximum flow
 //
-//void Network::FindAllPipelinesByRepair() {
-//	cout << "Enter station status for searching: ";
-//	bool flag = CorrectInput(false, true);
-//	unordered_set<int> result = FindPipelinesByFilter(pipes, CheckByRepair, flag);
-//	for (int id : result) {
-//		cout << pipes[id];
+//		// Augment the flow while there is an augmenting path in the residual graph
+//		while (true)
+//		{
+//			vector<int> parent(n, -1);
+//			vector<bool> used(n, false);
+//			queue<int> q;
+//
+//			used[source] = true;
+//			q.push(source);
+//
+//			while (!q.empty())
+//			{
+//				int v = q.front();
+//				q.pop();
+//				for (int i = 0; i < n; i++)
+//				{
+//					if (!used[i] && residualGraph[v][i] > 0)
+//					{
+//						parent[i] = v;
+//						used[i] = true;
+//						q.push(i);
+//					}
+//				}
+//			}
+//			if (!used[sink])
+//				break;
+//			int augFlow = INF;
+//
+//			int ptr = sink;
+//			while (ptr != source)
+//			{
+//				augFlow = min(augFlow, residualGraph[parent[ptr]][ptr]);
+//				ptr = parent[ptr];
+//			}
+//			ptr = sink;
+//			while (ptr != source)
+//			{
+//				residualGraph[parent[ptr]][ptr] -= augFlow;
+//				residualGraph[ptr][parent[ptr]] += augFlow;
+//				ptr = parent[ptr];
+//			}
+//			maxFlow += augFlow;
+//		}
+//
+//
+//		cout << "Max flow: " << maxFlow << endl;
 //	}
 //}
