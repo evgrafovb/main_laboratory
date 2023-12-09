@@ -18,6 +18,8 @@ public:
 	void SetMaxID() const;
 	Pipeline();
 	static Pipeline CreatePipe(int d = 0);
+
+	int getPipeProductivity() const;
 	
 	int getPipeID() const;
 	int getPipeDiametre() const;

@@ -8,16 +8,19 @@ class Graph
 {
 	vector<vector<int>> ribs;
 	unordered_map<int, int> stepeny;
+	vector<vector<pair<int, double>>> weights;
+	vector<vector<int>> capacities;
+	int sourceID;
+	int sinkID;
 public:
 	Graph(vector<vector<int>>& rebra, unordered_map<int, int>& stepeny_vershin);
-//	vector<vector<int>> CreateRibs(unordered_map<int, Pipeline>& pipes);
-//	int StationsAmount(unordered_map<int, CompressorStation>& stations);
-//	unordered_map<int, int> StepenyVershin(unordered_map<int, CompressorStation>& stations);
+	Graph(vector<vector<pair<int, double>>>& w, int& source, int& sink);
+	Graph(vector<vector<int>>& cap, int& source, int& sink);
 	vector<int> TopologicalSort();
 	void ShowTopologicalSort(const vector<int>& result);
-//	vector<vector<pair<int, double>>> CreateWeights(unordered_map<int, Pipeline>& pipes);
-//	void FindWay();
-//	vector<vector<int>> CreateCapacities(unordered_map<int, Pipeline>& pipes);
-//	void FindMaxFlow();
+	vector<int> FindWay();
+	void ShowShortestWay(const vector<int>& result, int vershina);
+	bool bfs(vector<vector<int>>& graph, int source, int sink, vector<int>& parent);
+	int FindMaxFlow();
+	void ShowMaxFlow(const int& maxFlow);
 };
-

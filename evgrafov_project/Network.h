@@ -21,7 +21,7 @@ public:
 	void EditPipeline(int ID);
 	void EditStation();
 	void SaveData();
-	void LoadDate();
+	void LoadData();
 	void DeletePipeline(int ID);
 	void DeleteStation();
 	void ClearPipelines();
@@ -34,9 +34,8 @@ public:
 	vector<vector<int>> CreateRibs();
 	int StationsAmount();
 	unordered_map<int, int> StepenyVershin();
-	//void TopologicalSort();
 	vector<vector<pair<int, double>>> CreateWeights();
-	void FindWay();
+	int SourceID();
+	int SinkId();
 	vector<vector<int>> CreateCapacities();
-	//void FindMaxFlow();
 };

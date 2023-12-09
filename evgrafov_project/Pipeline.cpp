@@ -41,6 +41,10 @@ Pipeline Pipeline::CreatePipe(int d) {
 	return pipe;
 }
 
+int Pipeline::getPipeProductivity() const {
+	return round(100000 * sqrt(pow((diametre / 1000.0), 5.0) / length));
+}
+
 int Pipeline::getPipeID() const
 {
 	return id;

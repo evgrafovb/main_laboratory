@@ -206,7 +206,7 @@ int main() {
 			break;
 		}
 		case 7: {
-			net.LoadDate();
+			net.LoadData();
 			break;
 		}
 		case 8: {
@@ -278,18 +278,22 @@ int main() {
 			auto stepeny_vershin = net.StepenyVershin();
 			Graph g(rebra, stepeny_vershin);
 			g.ShowTopologicalSort(g.TopologicalSort());
-			//net.TopologicalSort();
 			break;
 		}
 		case 17: {
-			//Graph g;
-			//g.FindWay();
-			net.FindWay();
+			auto weights = net.CreateWeights();
+			auto SourceID = net.SourceID();
+			auto SinkID = net.SinkId();
+			Graph g(weights, SourceID, SinkID);
+			g.ShowShortestWay(g.FindWay(), SinkID);
 			break;
 		}
 		case 18: {
-			//Graph g;
-			//g.FindMaxFlow();
+			auto capacities = net.CreateCapacities();
+			auto SourceID = net.SourceID();
+			auto SinkId = net.SinkId();
+			Graph g(capacities, SourceID, SinkId);
+			g.ShowMaxFlow(g.FindMaxFlow());
 			break;
 		}
 		case 0:
